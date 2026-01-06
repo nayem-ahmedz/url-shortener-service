@@ -1,5 +1,9 @@
+import Hero from "@/components/ui/Hero";
+
 export default function Home() {
   return (
-    <h1>Hello</h1>
+    <>
+        <Hero />
+    </>
   );
 }
