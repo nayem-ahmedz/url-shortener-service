@@ -6,7 +6,8 @@ export default function Header() {
         { id: 1, text: 'Home', url: '/' },
         { id: 2, text: 'About', url: '/about' },
         { id: 3, text: 'Contact', url: '/contact' },
-        { id: 4, text: 'Register', url: '/register' }
+        { id: 4, text: 'Register', url: '/register' },
+        { id: 5, text: 'Dashboard', url: '/dashboard' }
     ];
     return (
         <header className="bg-base-100 shadow-sm">
