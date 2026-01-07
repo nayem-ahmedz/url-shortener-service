@@ -9,6 +9,9 @@ It provides a clean and responsive user interface that allows users to authentic
 - Icons: React Icons
 - API Client: Axios
 
+## Used Packages
+- react toastify
+
 ## Key Features
 - User Authentication: Secure Login and Signup flows.
 - Dashboard: View all your links, their click counts, and creation dates.

@@ -1,3 +1,5 @@
+'use client';
+import { useAuth } from "@/context/AuthContext";
 import { navLinkT } from "@/types/navLinkT";
 import Link from "next/link";
 
@@ -9,6 +11,8 @@ export default function Header() {
         { id: 4, text: 'Register', url: '/register' },
         { id: 5, text: 'Dashboard', url: '/dashboard' }
     ];
+    const { currentUser } = useAuth();
+    console.log(currentUser);
     return (
         <header className="bg-base-100 shadow-sm">
             <div className="navbar containerr">
