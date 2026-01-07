@@ -8,8 +8,35 @@ The backend service for the URL Shortener, built with Express, TypeScript (ESM),
 - Database: MySQL
 - Security: Bcrypt (Hashing) & JWT (Authentication)
 
-## 📋 API Documentation
+## Used Packages
+- bcrypt
+- cors
+- dotenv
+- jsonwebtoken
+- mysql2
+- axios
+- cookie-parser
 
+## API Documentation
+All protected routes require the `token` HttpOnly cookie. Frontend requests must use `withCredentials: true`.
+
+---
+
+### Authentication
+| Method | Endpoint | Description | Auth |
+| :--- | :--- | :--- | :--- |
+| `POST` | `/api/auth/register` | Create new account | No |
+| `POST` | `/api/auth/login` | Login & set auth cookies | No |
+| `GET` | `/api/auth/me` | Get current user data | Yes |
+| `POST` | `/api/auth/logout` | Clear all auth cookies | Yes |
+
+**Success Response (Login/Me):**
+```json
+{
+  "status": true,
+  "user": { "id": 1, "name": "John", "email": "john@example.com" }
+}
+```
 
 
 ### Example Register Request:

@@ -2,6 +2,12 @@ import type { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
 import pool from '../config.ts/db.js';
 import jwt from 'jsonwebtoken';
+import type { AuthRequest } from '../middlewares/verifyAuth.js';
+
+const JWT_SECRET: string | undefined = process.env.JWT_SECRET;
+if (!JWT_SECRET) {
+    throw new Error("JWT_SECRET not defined");
+}
 
 // REgister
 export const register = async (req: Request, res: Response) => {
@@ -21,14 +27,13 @@ export const register = async (req: Request, res: Response) => {
         );
         if (existingUser.length > 0) {
             return res.status(409).json({
-                status: false, message: "Email already registered"
+                status: false, message: "Email already registered, try to login"
             });
         }
 
         // Hash password
         const salt = await bcrypt.genSalt(10);
         const passwordHash = await bcrypt.hash(password, salt);
-        console.log(password, passwordHash);
 
         // Insert user
         await pool.execute(
@@ -59,7 +64,7 @@ export const login = async (req: Request, res: Response) => {
         }
         // Find User
         const [rows]: any = await pool.execute(
-            'SELECT * FROM users WHERE email = ?', 
+            'SELECT id, name, email, password_hash FROM users WHERE email = ?',
             [email]
         );
         const user = rows[0];
@@ -70,15 +75,18 @@ export const login = async (req: Request, res: Response) => {
         }
 
         // Generate jwt Token
-        const token = jwt.sign( { id: user.id, email: user.email }, process.env.JWT_SECRET || 'chooseandselectyoursecretkey', { expiresIn: '24h' } );
+        const token = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET, { expiresIn: '24h' });
 
-        // Set HttpOnly Cookie
-        res.cookie('token', token, {
-            httpOnly: true,
+        const cookieOptions = {
             secure: process.env.NODE_ENV === 'production', // Only over HTTPS in production
-            sameSite: 'lax',
+            sameSite: 'lax' as const,
             maxAge: 24 * 60 * 60 * 1000,
-        });
+            path: '/'
+        };
+
+        res.cookie('token', token, { ...cookieOptions, httpOnly: true }); // secure cookie
+        // js visible cookie, to save server call upon unregistererd visits
+        res.cookie('isRegisterred', 'true', { ...cookieOptions, httpOnly: false });
 
         return res.status(200).json({
             status: true,
@@ -89,9 +97,58 @@ export const login = async (req: Request, res: Response) => {
                 email: user.email
             }
         });
-        
+
     } catch (err) {
         console.error("Login Error:", err);
         return res.status(500).json({ status: false, message: "Internal server error" });
     }
+};
+
+// Get logged-in user (restore auth)
+export const auth = async (req: AuthRequest, res: Response) => {
+    try {
+        const userId = req.user?.id;
+
+        if (!userId) {
+            return res.status(401).json({
+                status: false,
+                message: "Unauthorized",
+            });
+        }
+
+        const [rows]: any = await pool.execute(
+            "SELECT id, name, email FROM users WHERE id = ?",
+            [userId]
+        );
+
+        if (!rows.length) {
+            return res.status(404).json({
+                status: false,
+                message: "User not found",
+            });
+        }
+
+        return res.status(200).json({
+            status: true,
+            user: rows[0],
+        });
+    } catch (err) {
+        console.error("Auth check error:", err);
+        return res.status(500).json({
+            status: false,
+            message: "Server error",
+        });
+    }
+};
+
+// logout
+export const logout = (req: Request, res: Response) => {
+    res.clearCookie("token", { httpOnly: true, sameSite: "lax", secure: true, path: "/" });
+    // clearing JS-visible hint cookie as well
+    res.clearCookie("isRegisterred", { httpOnly: false, sameSite: "lax", secure: true, path: "/" });
+
+    return res.status(200).json({
+        status: true,
+        message: "Logged out successfully",
+    });
 };

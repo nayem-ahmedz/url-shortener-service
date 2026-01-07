@@ -17,6 +17,7 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+// function to get Authenticated user, and auth function
 export const useAuth = () => {
     const context = useContext(AuthContext);
     if (!context) throw new Error("useAuth must be used inside AuthProvider");
@@ -30,13 +31,24 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
     // Restore login from cookie
     useEffect(() => {
         const fetchUser = async () => {
+            // This cookie is visible to JS
+            const hasHint = document.cookie.includes('isRegisterred');
+            if (!hasHint) {
+                setCurrentUser(null);
+                setLoading(false);
+                return;
+            }
             try {
                 const res = await axiosInstance.get("/api/auth/me");
                 if (res.data.status) {
                     setCurrentUser(res.data.user);
                 }
-            } catch {
-                setCurrentUser(null);
+            } catch (err: any) {
+                if (err.response?.status === 401) {
+                    setCurrentUser(null);
+                    // CLEANUP exired cookies
+                    document.cookie = "isRegisterred=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+                }
             } finally {
                 setLoading(false);
             }

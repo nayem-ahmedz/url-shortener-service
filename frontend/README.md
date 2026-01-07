@@ -11,6 +11,7 @@ It provides a clean and responsive user interface that allows users to authentic
 
 ## Used Packages
 - react toastify
+- sweetalert2
 
 ## Key Features
 - User Authentication: Secure Login and Signup flows.
