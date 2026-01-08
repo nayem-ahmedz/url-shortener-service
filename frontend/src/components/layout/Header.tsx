@@ -86,14 +86,8 @@ export default function Header() {
                                     <ul
                                         tabIndex={-1}
                                         className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow">
-                                        <li>
-                                            <a className="justify-between">
-                                                Profile
-                                                <span className="badge">New</span>
-                                            </a>
-                                        </li>
-                                        <li><Link href='/dashboard'>Dashboard</Link></li>
-                                        <li><button onClick={handleLogout}>Logout</button></li>
+                                        <li><Link className="text-base" href='/dashboard'>Dashboard</Link></li>
+                                        <li><button className="text-base" onClick={handleLogout}>Logout</button></li>
                                     </ul>
                                 </div> : <Link href='/login' className="text-base btn btn-primary btn-outline">
                                     Login
