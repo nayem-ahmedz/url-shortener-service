@@ -4,6 +4,8 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 // routes
 import authRoutes from './routes/auth.js';
+import urlRoutes from './routes/urls.js';
+import { redirectUrl } from './controllers/url.js';
 
 const app = express();
 
@@ -22,6 +24,13 @@ app.get('/', (req: Request, res: Response) => {
     res.json({status: true, message: 'URL Shortener API is running (ES Modules + TS)'});
 });
 
+// auth endpoint
 app.use('/api/auth', authRoutes);
+
+// url shortener related endpoints
+app.use("/api/urls", urlRoutes);
+
+// public redirect
+app.get("/:shortCode", redirectUrl);
 
 export default app;

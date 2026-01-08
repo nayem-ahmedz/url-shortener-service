@@ -1,6 +1,6 @@
 import type { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
-import pool from '../config.ts/db.js';
+import pool from '../config/db.js';
 import jwt from 'jsonwebtoken';
 import type { AuthRequest } from '../middlewares/verifyAuth.js';
 

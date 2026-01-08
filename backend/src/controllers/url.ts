@@ -1,0 +1,117 @@
+import type { Response } from "express";
+import pool from '../config/db.js';
+import { nanoid } from "nanoid";
+import type { AuthRequest } from "../middlewares/verifyAuth.js";
+
+// Fallback for BASE_URL
+const BASE_URL = process.env.BASE_URL || `http://localhost:${process.env.PORT || 5000}`;
+if (!process.env.BASE_URL) {
+  console.warn(`Warning: BASE_URL not set in environment. Using fallback: ${BASE_URL}`);
+}
+
+
+// create a short url
+export const shortenUrl = async (req: AuthRequest, res: Response) => {
+    try {
+        const { long_url } = req.body;
+        const userId = req.user?.id;
+
+        if (!long_url) {
+            return res.status(400).json({ status: false, message: "URL is required" });
+        }
+
+        // Check usage limit (max 100 URLs per user) for free
+        const [countResult]: any = await pool.execute(
+            "SELECT COUNT(*) as count FROM urls WHERE user_id = ?", [userId]
+        );
+        if (countResult[0].count >= 100) {
+            return res.status(403).json({
+                status: false, message: "Limit reached! Free tier is limited to 100 URLs. Please upgrade."
+            });
+        }
+
+        // Generate unique short code using nanoid package
+        let shortCode = nanoid(7);
+        let exists = true;
+
+        // Collision check
+        while (exists) {
+            const [rows]: any = await pool.execute(
+                "SELECT id FROM urls WHERE short_code = ?", [shortCode]
+            );
+            if (rows.length === 0) {
+                exists = false;
+            } else {
+                shortCode = nanoid(7); // regenerate short code
+            }
+        }
+
+        await pool.execute(
+            "INSERT INTO urls (user_id, long_url, short_code) VALUES (?, ?, ?)", [userId, long_url, shortCode]
+        );
+        // Return short URL
+        return res.status(201).json({
+            status: true, shortCode, shortUrl: `${BASE_URL}/${shortCode}`
+        });
+    } catch (err) {
+        console.error("shortenUrl error:", err);
+        return res.status(500).json({ status: false, message: "Server error" });
+    }
+};
+
+
+// Get all user links
+export const getMyLinks = async (req: AuthRequest, res: Response) => {
+    try {
+        const userId = req.user?.id;
+
+        const [rows]: any = await pool.execute(
+            "SELECT id, long_url, short_code, clicks, created_at FROM urls WHERE user_id = ? ORDER BY created_at DESC", [userId]
+        );
+
+        return res.status(200).json({ status: true, links: rows });
+    } catch (err) {
+        console.error("getMyLinks error:", err);
+        return res.status(500).json({ status: false, message: "Server error" });
+    }
+};
+
+// Delete a link
+export const deleteLink = async (req: AuthRequest, res: Response) => {
+    try {
+        const { id } = req.params;
+        const userId = req.user?.id;
+
+        await pool.execute(
+            "DELETE FROM urls WHERE id = ? AND user_id = ?", [id, userId]
+        );
+
+        return res.status(200).json({ status: true, message: "Link deleted successfully" });
+    } catch (err) {
+        console.error("deleteLink error:", err);
+        return res.status(500).json({ status: false, message: "Server error" });
+    }
+};
+
+
+// Redirect short URL
+export const redirectUrl = async (req: any, res: Response) => {
+    try {
+        const { shortCode } = req.params;
+        const [rows]: any = await pool.execute(
+            "SELECT long_url FROM urls WHERE short_code = ?", [shortCode]
+        );
+
+        if (rows.length === 0) return res.status(404).send("URL not found");
+
+        // click count++
+        await pool.execute(
+            "UPDATE urls SET clicks = clicks + 1 WHERE short_code = ?", [shortCode]
+        );
+
+        return res.redirect(rows[0].long_url);
+    } catch (err) {
+        console.error("redirectUrl error:", err);
+        return res.status(500).send("Server error");
+    }
+};
