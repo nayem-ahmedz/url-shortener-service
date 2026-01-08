@@ -21,17 +21,14 @@ It provides a clean and responsive user interface that allows users to authentic
 
 ## Structure
 - /app: Pages and Layouts (App Router).
-- /components: Reusable UI components (Buttons, Inputs, Cards).
-- /hooks: Custom React hooks for API interaction.
+- /components: Reusable UI components
+- /context: Context for using logged in user across the app
 - /utils: Helper functions.
 
 ## Setup
-1. Run npm install.
-2. Ensure the Backend API is running.
-3. Start the development server: npm run dev.
-4. Access at http://localhost:3000.
-
-## Design Decisions
-- Component-Based Architecture: Kept UI elements modular for easy testing.
-- Client-Side Validation: Added URL regex checks to prevent invalid submissions before hitting the API.
-- Responsive Design: Used Tailwind's utility-first approach to ensure the dashboard works on mobile and desktop.
+1. Clone the repository and navigate to the frontend folder.
+2. Install dependencies using : npm install
+3. Add backend API in .env file
+4. Ensure the Backend API is running.
+5. Start the development server: npm run dev.
+6. Access at http://localhost:3000

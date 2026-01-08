@@ -96,3 +96,10 @@ CREATE INDEX idx_short_code ON urls(short_code);
 2. Run npm install.
 3. Start the dev server: npm run dev.
 4. Build for production: npm run build.
+
+```bash
+cd backend
+npm install
+# Copy .env.example to .env and fill with your credentials
+npm run dev
+```
