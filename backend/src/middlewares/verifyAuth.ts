@@ -30,8 +30,15 @@ const verifyAuth = (req: AuthRequest, res: Response, next: NextFunction) => {
         };
         next();
     } catch (err: any) {
+        if (err.name === "TokenExpiredError") {
+            return res.status(401).json({
+                status: false,
+                message: "Session expired. Please login again.",
+            });
+        }
         return res.status(401).json({
-            status: false, message: "Session expired or invalid. Please login again.",
+            status: false,
+            message: "Invalid token. Please login again.",
         });
     }
 };
