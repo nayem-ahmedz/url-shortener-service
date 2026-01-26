@@ -2,7 +2,7 @@
 
 A full-stack URL shortener application that allows authenticated users to create, manage, and track shortened URLs via a dashboard.
 
-## 📂 Project Structure
+## Project Structure
 
 This is a monorepo-style setup containing both the frontend and backend:
 
@@ -52,6 +52,6 @@ npm run dev
 
 ## Timeline
 **Created:** January 6, 2026  
-**Last Updated:** January 8, 2026  
+**Last Updated:** January 27, 2026  
 
 Feel free to provide any feedback, thanks
