@@ -79,7 +79,7 @@ export const login = async (req: Request, res: Response) => {
 
         const cookieOptions = {
             secure: process.env.NODE_ENV === 'production', // Only over HTTPS in production
-            sameSite: 'lax' as const,
+            sameSite: 'none' as const,
             maxAge: 24 * 60 * 60 * 1000,
             path: '/'
         };
@@ -143,9 +143,9 @@ export const auth = async (req: AuthRequest, res: Response) => {
 
 // logout
 export const logout = (req: Request, res: Response) => {
-    res.clearCookie("token", { httpOnly: true, sameSite: "lax", secure: true, path: "/" });
+    res.clearCookie("token", { httpOnly: true, sameSite: "none", secure: true, path: "/" });
     // clearing JS-visible hint cookie as well
-    res.clearCookie("isRegisterred", { httpOnly: false, sameSite: "lax", secure: true, path: "/" });
+    res.clearCookie("isRegisterred", { httpOnly: false, sameSite: "none", secure: true, path: "/" });
 
     return res.status(200).json({
         status: true,
