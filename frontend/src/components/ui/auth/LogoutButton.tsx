@@ -1,8 +1,10 @@
-import { useAuth } from "@/context/AuthContext";
+import useUser from "@/hooks/useUser";
+import { useRouter } from "next/navigation";
 import Swal from "sweetalert2";
 
 export default function LogoutButton() {
-    const { logout } = useAuth();
+    const { logout } = useUser();
+    const router = useRouter();
     const handleLogout = async (): Promise<void> => {
         const result = await Swal.fire({
             title: "Ready to logout?",
@@ -17,11 +19,13 @@ export default function LogoutButton() {
         if (result.isConfirmed) {
             try {
                 await logout();
+                router.refresh();
                 Swal.fire({
                     title: "Logged Out!",
                     text: "You have been logged out successfully.",
                     icon: "success"
                 });
+                router.replace('/');
             } catch (error) {
                 Swal.fire({
                     title: "Error!",

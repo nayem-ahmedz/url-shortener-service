@@ -1,5 +1,5 @@
 'use client';
-import { useAuth } from "@/context/AuthContext";
+import useUser from "@/hooks/useUser";
 import { axiosInstance } from "@/lib/axios";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -9,7 +9,7 @@ import { toast } from "react-toastify";
 export default function LoginForm() {
     const [loading, setLoading] = useState(false);
     const router = useRouter();
-    const { setCurrentUser } = useAuth();
+    const { setCurrentUser } = useUser();
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
         e.preventDefault();
         setLoading(true);

@@ -1,33 +1,31 @@
 'use client';
-import { useAuth } from "@/context/AuthContext";
 import Link from "next/link";
-import LogoutButton from "./LogoutButton";
+import LogoutButton from "../auth/LogoutButton";
+import useUser from "@/hooks/useUser";
 
 export default function ProfileMenue() {
-    const { loading, currentUser } = useAuth();
+    const { currentUser } = useUser();
     return (
         <div className="navbar-end pr-2">
             {
-                // loading status on auth fething, if user show profile menue else show login
-                loading ? <span className="loading loading-dots loading-xl"></span> :
-                    currentUser
-                        ? <div className="dropdown dropdown-end">
-                            <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
-                                <div className="w-10 rounded-full">
-                                    <img
-                                        alt="Tailwind CSS Navbar component"
-                                        src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp" />
-                                </div>
+                currentUser
+                    ? <div className="dropdown dropdown-end">
+                        <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
+                            <div className="w-10 rounded-full">
+                                <img
+                                    alt="Tailwind CSS Navbar component"
+                                    src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp" />
                             </div>
-                            <ul
-                                tabIndex={-1}
-                                className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow">
-                                <li><Link className="text-base" href='/dashboard'>Dashboard</Link></li>
-                                <li><LogoutButton /></li>
-                            </ul>
-                        </div> : <Link href='/login' className="text-base btn btn-primary btn-outline">
-                            Login
-                        </Link>
+                        </div>
+                        <ul
+                            tabIndex={-1}
+                            className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow">
+                            <li><Link className="text-base" href='/dashboard'>Dashboard</Link></li>
+                            <li><LogoutButton /></li>
+                        </ul>
+                    </div> : <Link href='/login' className="text-base btn btn-primary btn-outline">
+                        Login
+                    </Link>
             }
         </div>
     );
