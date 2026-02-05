@@ -1,51 +1,41 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { Bounce, ToastContainer } from "react-toastify";
-import AuthProvider from "@/context/AuthContext";
+import ToastCont from "@/components/utils/ToastCont";
+import getSession from "@/lib/session";
+import UserProvider from "@/context/UserProvider";
 
 const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
+    variable: "--font-geist-sans",
+    subsets: ["latin"],
 });
 
 const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+    variable: "--font-geist-mono",
+    subsets: ["latin"],
 });
 
 export const metadata: Metadata = {
-  title: "URL Shortener Service | Home",
-  description: "Convert long urls into short and shareable links",
+    title: "URL Shortener Service | Home",
+    description: "Convert long urls into short and shareable links",
 };
 
-export default function RootLayout({
-  children,
+export default async function RootLayout({
+    children,
 }: Readonly<{
-  children: React.ReactNode;
+    children: React.ReactNode;
 }>) {
-  return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <AuthProvider>
-          {children}
-          <ToastContainer
-            position="top-right"
-            autoClose={5000}
-            hideProgressBar={false}
-            newestOnTop={false}
-            closeOnClick={false}
-            rtl={false}
-            pauseOnFocusLoss
-            draggable
-            pauseOnHover
-            theme="light"
-            transition={Bounce}
-          />
-        </AuthProvider>
-      </body>
-    </html>
-  );
+    const user = await getSession(); // fetch user on server (action), then pass to Provider
+    return (
+        <html lang="en">
+            <body
+                className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+            >
+                <UserProvider initialUser={user}>
+                    {children}
+                    <ToastCont />
+                </UserProvider>
+            </body>
+        </html>
+    );
 }

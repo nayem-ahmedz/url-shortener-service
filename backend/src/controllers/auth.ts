@@ -1,8 +1,8 @@
 import type { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
-import pool from '../config/db.js';
 import jwt from 'jsonwebtoken';
 import type { AuthRequest } from '../middlewares/verifyAuth.js';
+import pool from '../config/db.js';
 
 const JWT_SECRET: string | undefined = process.env.JWT_SECRET;
 if (!JWT_SECRET) {
@@ -54,6 +54,8 @@ export const register = async (req: Request, res: Response) => {
     }
 }
 
+const isProduction = process.env.NODE_ENV === 'production';
+
 // Login
 export const login = async (req: Request, res: Response) => {
     try {
@@ -77,16 +79,17 @@ export const login = async (req: Request, res: Response) => {
         // Generate jwt Token
         const token = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET, { expiresIn: '24h' });
 
-        const cookieOptions = {
-            secure: process.env.NODE_ENV === 'production', // Only over HTTPS in production
-            sameSite: 'none' as const,
+        // set cookie : httpOnly to prevent client side js access
+        res.cookie('token', token, {
+            httpOnly: true,
+            secure: isProduction,
+            sameSite: isProduction ? 'none' : 'lax',
             maxAge: 24 * 60 * 60 * 1000,
             path: '/'
-        };
+        });
 
-        res.cookie('token', token, { ...cookieOptions, httpOnly: true }); // secure cookie
         // js visible cookie, to save server call upon unregistererd visits
-        res.cookie('isRegisterred', 'true', { ...cookieOptions, httpOnly: false });
+        // res.cookie('isRegisterred', 'true', { ...cookieOptions, httpOnly: false });
 
         return res.status(200).json({
             status: true,

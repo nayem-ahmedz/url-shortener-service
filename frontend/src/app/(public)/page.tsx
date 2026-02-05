@@ -1,9 +1,9 @@
-import Hero from "@/components/ui/Hero";
+import Hero from "@/components/ui/homepage/Hero";
 
 export default function Home() {
-  return (
-    <>
-        <Hero />
-    </>
-  );
+    return (
+        <>
+            <Hero />
+        </>
+    );
 }

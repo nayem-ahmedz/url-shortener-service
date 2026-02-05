@@ -1,12 +1,14 @@
 'use client';
-import { useAuth } from "@/context/AuthContext";
 import Image from "next/image";
 import Link from "next/link";
 import { RiDashboardFill } from "react-icons/ri";
 import { FaBars } from "react-icons/fa";
+import LogoutButton from "@/components/ui/auth/LogoutButton";
+import { RiLogoutBoxLine } from "react-icons/ri";
+import useUser from "@/hooks/useUser";
 
 export default function PublicRoot({ children }: { children: React.ReactNode }) {
-    const { currentUser } = useAuth();
+    const { currentUser } = useUser();
     return (
         <main className="containerr2">
             <div className="drawer lg:drawer-open">
@@ -51,6 +53,12 @@ export default function PublicRoot({ children }: { children: React.ReactNode }) 
                                     <RiDashboardFill />
                                     <span className="is-drawer-close:hidden">Homepage</span>
                                 </Link>
+                            </li>
+                            <li>
+                                <div className="is-drawer-close:tooltip is-drawer-close:tooltip-right text-base" data-tip='Logout'>
+                                    <RiLogoutBoxLine />
+                                    <div className="is-drawer-close:hidden"><LogoutButton /></div>
+                                </div>
                             </li>
                         </ul>
                     </div>
