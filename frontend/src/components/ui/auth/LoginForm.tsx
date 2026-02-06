@@ -27,6 +27,8 @@ export default function LoginForm() {
             });
 
             if (response.data.status) {
+                // re-run getSession() on the server
+                router.refresh();
                 toast.success(response.data.message || "Login Successful!");
                 setCurrentUser(response.data.user);
                 form.reset();
