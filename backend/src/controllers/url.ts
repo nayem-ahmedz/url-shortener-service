@@ -1,7 +1,8 @@
 import type { Response } from "express";
-import pool from '../config/db.js';
 import { nanoid } from "nanoid";
 import type { AuthRequest } from "../middlewares/verifyAuth.js";
+// import pool from '../config/db.js'; // local mysql db
+import pool from "../config/remote-db.js";
 
 // Fallback for BASE_URL
 const BASE_URL = process.env.BASE_URL || `http://localhost:${process.env.PORT || 5000}`;
