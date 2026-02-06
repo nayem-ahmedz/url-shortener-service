@@ -1,8 +1,8 @@
-import type { VercelRequest, VercelResponse } from '@vercel/node';
 import pool from '../src/config/remote-db';
 import app from '../src/app';
+import { Request, Response } from 'express';
 
-export default async (req: VercelRequest, res: VercelResponse) => {
+export default async (req: Request, res: Response) => {
     try {
         // 1. Connect to DB (Usually includes logic to skip if already connected)
         await pool.query('SELECT 1');
