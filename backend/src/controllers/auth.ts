@@ -2,7 +2,8 @@ import type { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import type { AuthRequest } from '../middlewares/verifyAuth.js';
-import pool from '../config/db.js';
+// import pool from '../config/db.js'; // local mysql db
+import pool from '../config/remote-db.js';
 
 const JWT_SECRET: string | undefined = process.env.JWT_SECRET;
 if (!JWT_SECRET) {
