@@ -1,5 +1,5 @@
-import pool from '../src/config/remote-db';
-import app from '../src/app';
+import pool from '../src/config/remote-db.js';
+import app from '../src/app.js';
 import type { Request, Response } from 'express';
 
 export default async (req: Request, res: Response) => {
