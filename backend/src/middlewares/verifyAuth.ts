@@ -1,5 +1,6 @@
 import type { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
+import { verifyToken } from "../utils/jwt.js";
 
 const JWT_SECRET: string | undefined = process.env.JWT_SECRET;
 if (!JWT_SECRET) {
@@ -14,16 +15,22 @@ export interface AuthRequest extends Request {
 }
 
 const verifyAuth = (req: AuthRequest, res: Response, next: NextFunction) => {
-    const token = req.cookies?.token;
+    const authToken = req.headers.authorization;
+    if (!authToken) {
+        return res.status(401).json({
+            status: false, message: "Unauthorized Access",
+        });
+    }
 
+    const token = authToken.split(' ')[1];
     if (!token) {
         return res.status(401).json({
-            status: false, message: "Unauthorized",
+            status: false, message: "Unauthorized Access",
         });
     }
 
     try {
-        const decoded = jwt.verify(token, JWT_SECRET) as { id: number; email: string };
+        const decoded = verifyToken(token) as {id: number, email: string};
         req.user = {
             id: decoded.id,
             email: decoded.email
