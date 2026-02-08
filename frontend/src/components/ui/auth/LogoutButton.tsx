@@ -18,14 +18,26 @@ export default function LogoutButton() {
 
         if (result.isConfirmed) {
             try {
-                await logout();
-                router.refresh();
-                Swal.fire({
-                    title: "Logged Out!",
-                    text: "You have been logged out successfully.",
-                    icon: "success"
-                });
-                router.replace('/');
+                const result = await logout();
+                if (result.status) {
+                    router.refresh();
+                    Swal.fire({
+                        title: "Logged Out!",
+                        text: "You have been logged out successfully.",
+                        icon: "success",
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                    router.replace('/');
+                } else{
+                    Swal.fire({
+                        title: "Failed to Log Out!",
+                        text: "internal server issue.",
+                        icon: "error",
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                }
             } catch (error) {
                 Swal.fire({
                     title: "Error!",

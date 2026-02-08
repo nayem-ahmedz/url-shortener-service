@@ -11,7 +11,7 @@ export default async function getSession(): Promise<User | null>{
     try{
         const res = await axiosInstance.get("/api/auth/me", {
             headers: {
-                Cookie: `token=${token.value}` // mannually attaching token (as this is server action, not from browser thus withCred wont work)
+                Authorization: `Bearer ${token.value}` // mannually attaching token (as this is server action, not from browser thus withCred wont work)
             }
         });
         if(res.data.status){

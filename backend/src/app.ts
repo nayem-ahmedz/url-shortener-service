@@ -12,7 +12,7 @@ const app = express();
 // CORS configuration
 app.use(cors({
     origin: process.env.FRONTEND_URL,
-    // credentials: true,
+    credentials: true
 }));
 
 app.use(express.json()); // parse json from req body
