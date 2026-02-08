@@ -21,23 +21,28 @@ export default function LoginForm() {
         const password = (formData.get('password') as string).trim();
 
         try {
-            const response = await axiosInstance.post('/api/auth/login', {
-                email,
-                password
+            const response = await fetch('/api/login', {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ email, password })
             });
-
-            if (response.data.status) {
-                // re-run getSession() on the server
-                router.refresh();
-                toast.success(response.data.message || "Login Successful!");
-                setCurrentUser(response.data.user);
-                form.reset();
-                router.push('/dashboard');
+            const data = await response.json();
+            if (!response.ok) {
+                toast.error(data.message || "Login failed");
+                return;
             }
-        } catch (error: any) {
-            const errorMessage = error.response?.data?.message || "Invalid credentials";
-            toast.error(errorMessage);
-            console.error('Login error:', error);
+            console.log(data);
+
+            // re-run getSession() on the server
+            router.refresh();
+            toast.success(data.message || "Login Successful!");
+            setCurrentUser(data.data);
+            form.reset();
+            router.push('/dashboard');
+        } catch (error) {
+            toast.error("Network error. Please try again.");
         } finally {
             setLoading(false);
         }

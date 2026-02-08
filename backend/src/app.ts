@@ -1,10 +1,10 @@
 import express from 'express';
 import type { Request, Response } from 'express';
 import cors from 'cors';
-import cookieParser from 'cookie-parser';
+
 // routes
-import authRoutes from './routes/auth.js';
-import urlRoutes from './routes/urls.js';
+import authRoutes from './routes/auth.route.js';
+import urlRoutes from './routes/urls.route.js';
 import { redirectUrl } from './controllers/url.js';
 
 const app = express();
@@ -12,23 +12,18 @@ const app = express();
 // CORS configuration
 app.use(cors({
     origin: process.env.FRONTEND_URL,
-    credentials: true,
+    credentials: true
 }));
 
-// parse json from req body
-app.use(express.json());
-// Parse cookies
-app.use(cookieParser());
+app.use(express.json()); // parse json from req body
 
 app.get('/', (req: Request, res: Response) => {
     res.json({status: true, message: 'URL Shortener API is running (ES Modules + TS)'});
 });
 
-// auth endpoint
-app.use('/api/auth', authRoutes);
-
-// url shortener related endpoints
-app.use("/api/urls", urlRoutes);
+// APIs
+app.use('/api/auth', authRoutes); // auth endpoint
+app.use("/api/urls", urlRoutes); // url shortener related endpoints
 
 // public redirect
 app.get("/:shortCode", redirectUrl);
