@@ -1,4 +1,9 @@
+import type { Metadata } from "next";
 import RegisterForm from "@/components/ui/auth/RegisterForm";
+
+export const metadata: Metadata = {
+    title: 'Register'
+}
 
 export default function Register() {
     return (

@@ -5,7 +5,7 @@ import cors from 'cors';
 // routes
 import authRoutes from './routes/auth.route.js';
 import urlRoutes from './routes/urls.route.js';
-import { redirectUrl } from './controllers/url.js';
+import { redirectUrl } from './controllers/url.controller.js';
 
 const app = express();
 
@@ -23,7 +23,7 @@ app.get('/', (req: Request, res: Response) => {
 
 // APIs
 app.use('/api/auth', authRoutes); // auth endpoint
-app.use("/api/urls", urlRoutes); // url shortener related endpoints
+app.use("/api/url", urlRoutes); // url shortener related endpoints
 
 // public redirect
 app.get("/:shortCode", redirectUrl);

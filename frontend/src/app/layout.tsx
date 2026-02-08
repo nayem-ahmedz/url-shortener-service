@@ -16,8 +16,11 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-    title: "URL Shortener Service | Home",
-    description: "Convert long urls into short and shareable links",
+    title: {
+        template: '%s | URL Shortener',
+        default: 'URL Shortener | Home',
+    },
+    description: "A full-stack URL shortener application that allows authenticated users to create, manage, and track shortened URLs via a dashboard.",
 };
 
 export default async function RootLayout({

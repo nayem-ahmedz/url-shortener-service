@@ -1,3 +1,5 @@
+import type { Metadata } from 'next'
+
 import {
     FiZap,
     FiLock,
@@ -7,6 +9,10 @@ import {
     FiLink,
     FiTrendingUp
 } from "react-icons/fi";
+
+export const metadata: Metadata = {
+    title: 'About'
+}
 
 export default function About() {
     const features = [

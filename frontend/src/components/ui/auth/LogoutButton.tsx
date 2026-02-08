@@ -1,3 +1,4 @@
+'use client';
 import useUser from "@/hooks/useUser";
 import { useRouter } from "next/navigation";
 import Swal from "sweetalert2";

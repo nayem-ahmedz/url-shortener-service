@@ -33,7 +33,6 @@ export default function LoginForm() {
                 toast.error(data.message || "Login failed");
                 return;
             }
-            console.log(data);
 
             // re-run getSession() on the server
             router.refresh();

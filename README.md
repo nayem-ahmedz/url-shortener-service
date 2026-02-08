@@ -50,8 +50,12 @@ npm run dev
 - Click Tracking: Every redirect increments the click counter for analytics.
 - Delete Endpoint: Users can remove their links safely with confirmation dialogs on the frontend.
 
+## Modification
+- Redefined frontend codebase to utilize Next Js SSR
+- Move to next js server -> httpOnly cookie which fix cookie related issue due to different hosting platform used for frontend and backend
+
 ## Timeline
 **Created:** January 6, 2026  
-**Last Updated:** February 6, 2026  
+**Last Updated:** February 9, 2026  
 
 Feel free to provide any feedback, thanks

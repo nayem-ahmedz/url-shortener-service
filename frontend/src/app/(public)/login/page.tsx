@@ -1,4 +1,9 @@
+import type { Metadata } from "next";
 import LoginForm from "@/components/ui/auth/LoginForm";
+
+export const metadata: Metadata = {
+    title: 'Login'
+}
 
 export default function Login() {
     return (

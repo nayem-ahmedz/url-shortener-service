@@ -3,6 +3,7 @@ import { nanoid } from "nanoid";
 import type { AuthRequest } from "../middlewares/verifyAuth.js";
 // import pool from '../config/db.js'; // local mysql db
 import pool from "../config/remote-db.js";
+import { getMyLinks } from "../services/url.service.js";
 
 // Fallback for BASE_URL
 const BASE_URL = process.env.BASE_URL || `http://localhost:${process.env.PORT || 5000}`;
@@ -62,18 +63,22 @@ export const shortenUrl = async (req: AuthRequest, res: Response) => {
 
 
 // Get all user links
-export const getMyLinks = async (req: AuthRequest, res: Response) => {
+export const links = async (req: AuthRequest, res: Response) => {
     try {
         const userId = req.user?.id;
 
-        const [rows]: any = await pool.execute(
-            "SELECT id, long_url, short_code, clicks, created_at FROM urls WHERE user_id = ? ORDER BY created_at DESC", [userId]
-        );
+        const links = getMyLinks(userId!);
 
-        return res.status(200).json({ status: true, links: rows });
+        return res.status(200).json({
+            status: true,
+            links: links
+        });
     } catch (err) {
         console.error("getMyLinks error:", err);
-        return res.status(500).json({ status: false, message: "Server error" });
+        return res.status(500).json({
+            status: false,
+            message: "Server error"
+        });
     }
 };
 
