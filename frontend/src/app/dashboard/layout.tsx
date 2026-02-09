@@ -1,14 +1,17 @@
-'use client';
-import Image from "next/image";
+import type { Metadata } from "next";
+import Sidebar from "@/components/ui/dashboard/Sidebar";
 import Link from "next/link";
-import { RiDashboardFill } from "react-icons/ri";
 import { FaBars } from "react-icons/fa";
-import LogoutButton from "@/components/ui/auth/LogoutButton";
-import { RiLogoutBoxLine } from "react-icons/ri";
-import useUser from "@/hooks/useUser";
 
-export default function PublicRoot({ children }: { children: React.ReactNode }) {
-    const { currentUser } = useUser();
+export const metadata: Metadata = {
+    title: {
+        template: '%s | Dashboard - URL Shortener',
+        default: 'Dashboard Home - URL Shortener',
+    },
+    description: "Dashboard for URL Shortener service, from where a user can create, manage, and track shortened URLs.",
+};
+
+export default function DashboardRoot({ children }: { children: React.ReactNode }) {
     return (
         <main className="containerr2">
             <div className="drawer lg:drawer-open">
@@ -31,38 +34,7 @@ export default function PublicRoot({ children }: { children: React.ReactNode }) 
                         }
                     </div>
                 </div>
-
-                <div className="drawer-side is-drawer-close:overflow-visible">
-                    <label htmlFor="my-drawer-4" aria-label="close sidebar" className="drawer-overlay"></label>
-                    <div className="flex min-h-full flex-col items-start bg-base-200 is-drawer-close:w-14 is-drawer-open:w-64">
-                        {/* Sidebar content here */}
-                        <ul className="menu w-full grow">
-                            <li className="is-drawer-close:tooltip is-drawer-close:tooltip-right text-base mb-4">
-                                <div className="avatar justify-center cursor-default hover:bg-transparent">
-                                    <div className="w-6 is-drawer-open:w-20 rounded">
-                                        <Image src='/avatar.png' alt='placeholder avatar' width={200} height={200} />
-                                    </div>
-                                </div>
-                                <div className="is-drawer-close:hidden flex flex-col gap-0 cursor-default hover:bg-transparent">
-                                    <h2 className="text-2xl">{currentUser?.name}</h2>
-                                    <p>User</p>
-                                </div>
-                            </li>
-                            <li>
-                                <Link href='/dashboard' className="is-drawer-close:tooltip is-drawer-close:tooltip-right text-base" data-tip="Homepage">
-                                    <RiDashboardFill />
-                                    <span className="is-drawer-close:hidden">Homepage</span>
-                                </Link>
-                            </li>
-                            <li>
-                                <div className="is-drawer-close:tooltip is-drawer-close:tooltip-right text-base" data-tip='Logout'>
-                                    <RiLogoutBoxLine />
-                                    <div className="is-drawer-close:hidden"><LogoutButton /></div>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
+                <Sidebar />
             </div>
         </main>
     );
