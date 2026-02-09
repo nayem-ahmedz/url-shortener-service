@@ -1,27 +1,39 @@
 'use client';
-import { axiosInstance } from "@/lib/axios";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "react-toastify";
+const BaseUrl = process.env.NEXT_PUBLIC_API_URL;
 
 export default function ShortningForm() {
     const [loading, setLoading] = useState(false);
     const [shortUrl, setShortUrl] = useState('');
+    const router = useRouter();
     const handleShorten = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const form = e.currentTarget;
         const formData = new FormData(form);
-        const long_url = formData.get('long_url') as string;
+        const longUrl = formData.get('long_url') as string;
 
-        if (!long_url) return toast.error('Please enter a URL');
+        if (!longUrl) return toast.error('Please enter a URL');
 
         setLoading(true);
         try {
-            const res = await axiosInstance.post('/api/urls/shorten', { long_url });
-            if (res.data.status) {
-                setShortUrl(res.data.shortUrl);
-                toast.success('URL shortened successfully!');
-                form.reset();
+            const response = await fetch('/api/url/short', {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ longUrl })
+            });
+            const data = await response.json();
+            if (!response.ok) {
+                toast.error(data.message);
+                return;
             }
+            router.refresh();
+            setShortUrl(`${BaseUrl}/${data.shortCode}`);
+            toast.success('URL shortened successfully!');
+            form.reset();
         } catch (err: any) {
             if (err.response?.status === 403) toast.warning(err.response.data.message);
             else toast.error('Failed to shorten URL');

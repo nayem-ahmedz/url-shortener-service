@@ -15,10 +15,9 @@ The backend service for the URL Shortener, built with Express, TypeScript (ESM),
 - jsonwebtoken
 - mysql2
 - axios
-- cookie-parser
 
 ## API Documentation
-All protected routes require the `token` HttpOnly cookie. Frontend requests must use `withCredentials: true`.
+All protected routes require the `JWT token`. Frontend requests must use Authorization header with proper token.
 
 ---
 
@@ -26,18 +25,18 @@ All protected routes require the `token` HttpOnly cookie. Frontend requests must
 | Method | Endpoint | Description | Auth |
 | :--- | :--- | :--- | :--- |
 | `POST` | `/api/auth/register` | Create new account | No |
-| `POST` | `/api/auth/login` | Login & set auth cookies | No |
+| `POST` | `/api/auth/login` | Login & send JWT token | No |
 | `GET` | `/api/auth/me` | Get current user data | Yes |
-| `POST` | `/api/auth/logout` | Clear all auth cookies | Yes |
+| `POST` | `/api/auth/logout` | Clear logged in user | Yes |
 
 
 ### URL Endpoints
 
 | Method | Endpoint | Description | Auth |
 | :--- | :--- | :--- | :--- |
-| `POST` | `/api/urls/shorten` | Create a shortened URL (Max 100/free) | Yes |
-| `GET` | `/api/urls/my-links` | Fetch all links for the dashboard | Yes |
-| `DELETE` | `/api/urls/delete/:id` | Remove a specific shortened link | Yes |
+| `POST` | `/api/url/` | Create a shortened URL (Max 10/free) | Yes |
+| `GET` | `/api/url/` | Fetch all links for the dashboard | Yes |
+| `DELETE` | `/api/url/:id` | Remove a specific shortened link | Yes |
 | `GET` | `/:shortCode` | Public redirect to original URL | No |
 
 
@@ -45,12 +44,12 @@ All protected routes require the `token` HttpOnly cookie. Frontend requests must
 ```json
 {
   "status": true,
-  "shortCode": "x7K9mP2",
-  "shortUrl": "http://localhost:5000/x7K9mP2"
+  "shortCode": "x7K9mP2"
 }
 ```
 
 ## Database Setup and Schema
+- For localhost testing, use config/db.ts
 
 ### Create Database
 ```sql
@@ -91,7 +90,7 @@ CREATE INDEX idx_short_code ON urls(short_code);
 ```
 
 
-## ⚙️ Setup
+## Setup
 1. Configure your .env file using the provided .env.example.
 2. Run npm install.
 3. Start the dev server: npm run dev.

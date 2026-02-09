@@ -7,14 +7,14 @@ import UrlList from '@/components/ui/dashboard/shortning/UrlList';
 export default async function DashboardHome() {
     let errorOccurred = false;
     const axios = await axiosSecure();
+    let links : linkT[] = [];
     try{
         const res = await axios.get('/api/url');
-        console.log(res.data);
+        links = res.data.links || [];
     }catch(err){
         errorOccurred = true;
         console.log(err);
     }
-    const links : linkT[] = [];
     if (errorOccurred) {
         return (
             <div className="p-10 text-center">

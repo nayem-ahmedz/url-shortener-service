@@ -6,6 +6,7 @@ import cors from 'cors';
 import authRoutes from './routes/auth.route.js';
 import urlRoutes from './routes/urls.route.js';
 import { redirectUrl } from './controllers/url.controller.js';
+import { logger } from './middlewares/logger.js';
 
 const app = express();
 
@@ -16,6 +17,7 @@ app.use(cors({
 }));
 
 app.use(express.json()); // parse json from req body
+app.use(logger); // log details of api call
 
 app.get('/', (req: Request, res: Response) => {
     res.json({status: true, message: 'URL Shortener API is running (ES Modules + TS)'});
