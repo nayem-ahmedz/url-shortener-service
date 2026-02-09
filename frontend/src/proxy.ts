@@ -7,7 +7,6 @@ export async function proxy(request: NextRequest) {
     const cookieStore = await cookies()
     const token = cookieStore.get('token')?.value;
     const { pathname } = request.nextUrl;
-    console.log('pathname in proxy mid', pathname)
 
     // Protect the Dashboard
     if (pathname.startsWith('/dashboard')) {

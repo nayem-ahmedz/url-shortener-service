@@ -5,20 +5,14 @@ import type { AuthRequest } from "../middlewares/verifyAuth.js";
 import pool from "../config/remote-db.js";
 import { getMyLinks } from "../services/url.service.js";
 
-// Fallback for BASE_URL
-const BASE_URL = process.env.BASE_URL || `http://localhost:${process.env.PORT || 5000}`;
-if (!process.env.BASE_URL) {
-  console.warn(`Warning: BASE_URL not set in environment. Using fallback: ${BASE_URL}`);
-}
-
 
 // create a short url
 export const shortenUrl = async (req: AuthRequest, res: Response) => {
     try {
-        const { long_url } = req.body;
+        const { longUrl } = req.body;
         const userId = req.user?.id;
 
-        if (!long_url) {
+        if (!longUrl) {
             return res.status(400).json({ status: false, message: "URL is required" });
         }
 
@@ -26,7 +20,7 @@ export const shortenUrl = async (req: AuthRequest, res: Response) => {
         const [countResult]: any = await pool.execute(
             "SELECT COUNT(*) as count FROM urls WHERE user_id = ?", [userId]
         );
-        if (countResult[0].count >= 100) {
+        if (countResult[0].count >= 10) {
             return res.status(403).json({
                 status: false, message: "Limit reached! Free tier is limited to 100 URLs. Please upgrade."
             });
@@ -49,11 +43,11 @@ export const shortenUrl = async (req: AuthRequest, res: Response) => {
         }
 
         await pool.execute(
-            "INSERT INTO urls (user_id, long_url, short_code) VALUES (?, ?, ?)", [userId, long_url, shortCode]
+            "INSERT INTO urls (user_id, long_url, short_code) VALUES (?, ?, ?)", [userId, longUrl, shortCode]
         );
         // Return short URL
         return res.status(201).json({
-            status: true, shortCode, shortUrl: `${BASE_URL}/${shortCode}`
+            status: true, shortCode
         });
     } catch (err) {
         console.error("shortenUrl error:", err);
@@ -67,8 +61,7 @@ export const links = async (req: AuthRequest, res: Response) => {
     try {
         const userId = req.user?.id;
 
-        const links = getMyLinks(userId!);
-
+        const links = await getMyLinks(userId!);
         return res.status(200).json({
             status: true,
             links: links
